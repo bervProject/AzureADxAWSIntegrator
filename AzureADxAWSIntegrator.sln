@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureADIntegrator", "AzureADIntegrator\AzureADIntegrator.csproj", "{42F905A3-1303-4834-8454-9F2930A2EF0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureADAutomate", "AzureADAutomate\AzureADAutomate.csproj", "{D5A5E576-E84D-4E30-A865-C2B708253BD7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSIntegrator", "AWSIntegrator\AWSIntegrator.csproj", "{08A55617-2B69-4CBC-A665-A0F11FB698A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{B9496513-9300-4E0D-94D8-A5256B7F6CAD}"
+	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{4A432B6E-0A25-458F-AE3D-E5A78EE260AF}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C3C0463D-C861-4B62-AC72-86C39945821D}"
+	ProjectSection(SolutionItems) = preProject
+		images\azureadxaws.drawio.png = images\azureadxaws.drawio.png
+		images\azureadxaws-1.drawio.png = images\azureadxaws-1.drawio.png
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42F905A3-1303-4834-8454-9F2930A2EF0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42F905A3-1303-4834-8454-9F2930A2EF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42F905A3-1303-4834-8454-9F2930A2EF0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42F905A3-1303-4834-8454-9F2930A2EF0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5A5E576-E84D-4E30-A865-C2B708253BD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A5E576-E84D-4E30-A865-C2B708253BD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A5E576-E84D-4E30-A865-C2B708253BD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A5E576-E84D-4E30-A865-C2B708253BD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08A55617-2B69-4CBC-A665-A0F11FB698A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08A55617-2B69-4CBC-A665-A0F11FB698A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08A55617-2B69-4CBC-A665-A0F11FB698A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08A55617-2B69-4CBC-A665-A0F11FB698A9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4A432B6E-0A25-458F-AE3D-E5A78EE260AF} = {B9496513-9300-4E0D-94D8-A5256B7F6CAD}
+	EndGlobalSection
+EndGlobal
