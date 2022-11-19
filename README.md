@@ -32,6 +32,54 @@ flowchart TD
     end
 ```
 
+## Setup Project
+
+### Environment Variables
+
+```bash
+## For the Console App/Business Flow, planned to be removed
+AWS_ACCOUNT_ID=
+## For AWS SDK
+AWS_PROFILE=
+# For Azure AD / Microsoft Graph
+CLIENT_ID=
+CLIENT_SECRET=
+TENANT_ID=
+```
+
+### Dependencies & Tools
+
+1. [Redis Stack](https://redis.io/docs/stack/) - Storing temporary data and will be used for main database
+   1. Recommend using [Redis Docker](https://redis.io/docs/stack/get-started/install/docker/)
+2. [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+3. Your IDE
+   1. I recommend using [Visual Studio](https://visualstudio.microsoft.com/) or [Rider](https://www.jetbrains.com/rider/).
+
+### Run Project
+
+```bash
+dotnet run --project AzureADAutomate
+```
+
+## Version
+
+Currently, this project is still in beta testing.
+
+## Roadmap for Next Iteration
+
+### Version 1
+
+- [ ] Remove AWS Account ID from Environment Variables and will be based on input
+- [ ] Consider existing Enterprise Apps and re-configure existing apps
+
+### Version 2
+
+- [ ] Communication through REST API & Event-Driven
+
+## Presentation
+
+- [Introduction - Case Study: Connecting Azure AD SSO with AWS](https://docs.google.com/presentation/d/1Ipis0cnnzbUQnikzyDZ5ZX2C3bE-jsFVLGk7co3Ttvo/edit?usp=sharing)
+
 ## Resources
 
 ### Main Resources
