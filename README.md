@@ -47,6 +47,13 @@ CLIENT_SECRET=
 TENANT_ID=
 ```
 
+**Note/Details**:
+
+1. Please see [here](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-creds.html) for configuring the AWS SDK Credentials.
+   1. Currently, we only change Identity Provider & IAM Roles. Please make sure your credentials allow you to create/update it.
+2. Please see [here](https://learn.microsoft.com/en-us/graph/sdks/choose-authentication-providers?tabs=CS#client-credentials-provider) for configuration the Microsoft Graph SDK Credentials.
+   1. Please make sure the credentials have these permissions: `Application.ReadWrite.All`, `AppRoleAssignment.ReadWrite.All`, `Policy.Read.All`, `Policy.ReadWrite.ApplicationConfiguration`, and `User.ReadWrite.All`
+
 ### Dependencies & Tools
 
 1. [Redis Stack](https://redis.io/docs/stack/) - Storing temporary data and will be used for main database
