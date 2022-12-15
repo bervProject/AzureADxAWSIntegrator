@@ -21,3 +21,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    - name: Publich
+      run: dotnet publish --configuration Release --no-restore -o publish
+    - uses: actions/upload-artifact@v3
+      with:
+        name: published
+        path: publish
