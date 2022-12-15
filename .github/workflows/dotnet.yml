@@ -9,7 +9,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-latest ]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET Core
@@ -21,3 +24,11 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    - name: Publish
+      if: ${{ github.event_name == 'push' }}
+      run: dotnet publish --configuration Release --no-restore -o publish
+    - uses: actions/upload-artifact@v3
+      if: ${{ github.event_name == 'push' }}
+      with:
+        name: published-${{ matrix.os }}
+        path: publish
