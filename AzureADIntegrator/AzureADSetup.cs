@@ -1,4 +1,7 @@
 ﻿using Microsoft.Graph;
+using Microsoft.Graph.ApplicationTemplates.Item.Instantiate;
+using Microsoft.Graph.Models;
+using Microsoft.Graph.ServicePrincipals.Item.AddTokenSigningCertificate;
 
 namespace AzureADIntegrator;
 
@@ -73,9 +76,7 @@ public class AzureAdSetup
             }
         };
 
-        var userResponse = await _graphServiceClient.Users
-            .Request()
-            .AddAsync(user);
+        var userResponse = await _graphServiceClient.Users.PostAsync(user);
         
         // Optional - App Assignment
         var appRoleAssignment = new AppRoleAssignment
@@ -86,34 +87,36 @@ public class AzureAdSetup
             ResourceId = Guid.Parse(servicePrincipalId)
         };
 
-        await _graphServiceClient.ServicePrincipals[servicePrincipalId].AppRoleAssignments
-            .Request()
-            .AddAsync(appRoleAssignment);
-
+        await _graphServiceClient.ServicePrincipals[servicePrincipalId].AppRoleAssignments.PostAsync(appRoleAssignment);
     }
 
     private async Task SetupSigningCertificate(string servicePrincipalId, string applicationName)
     {
         var displayName = $"CN={applicationName}";
         var endDateTime = DateTimeOffset.Parse("2024-01-25T00:00:00Z");
-        var tokenResponse = await _graphServiceClient.ServicePrincipals[servicePrincipalId]
-            .AddTokenSigningCertificate(displayName, endDateTime)
-            .Request()
-            .PostAsync();
+        var request = new AddTokenSigningCertificatePostRequestBody {
+            DisplayName = displayName,
+            EndDateTime = endDateTime
+        };
+        var tokenResponse = await _graphServiceClient.ServicePrincipals[servicePrincipalId].AddTokenSigningCertificate.PostAsync(request);
         var spRequest = new ServicePrincipal
         {
             PreferredTokenSigningKeyThumbprint = tokenResponse.Thumbprint
         };
-        await _graphServiceClient.ServicePrincipals[servicePrincipalId]
-            .Request()
-            .UpdateAsync(spRequest);
+        await _graphServiceClient.ServicePrincipals[servicePrincipalId].PatchAsync(spRequest);
     }
 
     private async Task<string> SetupClaimsMappingPolicy(string servicePrincipalId)
     {
-        var policies = await _graphServiceClient.Policies.ClaimsMappingPolicies.Request().Filter($"DisplayName eq '{AwsClaimsPolicyName}'").Top(1).GetAsync();
+        var policiesResponse = await _graphServiceClient.Policies.ClaimsMappingPolicies.GetAsync(
+            requestConfig => {
+                requestConfig.QueryParameters.Filter = $"DisplayName eq '{AwsClaimsPolicyName}'";
+                requestConfig.QueryParameters.Top = 1;
+            }
+        );
         string mappingPoliciesId;
-        if (policies.Count == 1)
+        var policies = policiesResponse?.Value;
+        if (policies != null && policies.Count == 1)
         {
             // give existing
             mappingPoliciesId = policies[0].Id;
@@ -129,26 +132,15 @@ public class AzureAdSetup
                 DisplayName = AwsClaimsPolicyName,
                 IsOrganizationDefault = false
             };
-            var claimsMappingPolicyResponse = await _graphServiceClient.Policies.ClaimsMappingPolicies
-                .Request()
-                .AddAsync(claimsMappingPolicy);
+            var claimsMappingPolicyResponse = await _graphServiceClient.Policies.ClaimsMappingPolicies.PostAsync(claimsMappingPolicy);
             mappingPoliciesId = claimsMappingPolicyResponse.Id;
         }
         
-        var claimsMappingPolicyReference = new ClaimsMappingPolicy
+        var claimsMappingPolicyReference = new ReferenceCreate
         {
-            Id = mappingPoliciesId,
-            AdditionalData = new Dictionary<string, object>()
-            {
-                {
-                    "@odata.id",
-                    $"https://graph.microsoft.com/v1.0/policies/claimsMappingPolicies/{mappingPoliciesId}"
-                }
-            }
+            OdataId = $"https://graph.microsoft.com/v1.0/policies/claimsMappingPolicies/{mappingPoliciesId}"
         };
-        await _graphServiceClient.ServicePrincipals[servicePrincipalId].ClaimsMappingPolicies.References
-            .Request()
-            .AddAsync(claimsMappingPolicyReference);
+        await _graphServiceClient.ServicePrincipals[servicePrincipalId].ClaimsMappingPolicies.Ref.PostAsync(claimsMappingPolicyReference);
         return mappingPoliciesId;
     }
 
@@ -201,9 +193,7 @@ public class AzureAdSetup
                 },
             }
         };
-        await _graphServiceClient.ServicePrincipals[servicePrincipalId]
-            .Request()
-            .UpdateAsync(servicePrincipal);
+        await _graphServiceClient.ServicePrincipals[servicePrincipalId].PatchAsync(servicePrincipal);
     }
 
     private async Task ConfigureSso(string applicationId, string servicePrincipalId, string appNumber)
@@ -213,7 +203,7 @@ public class AzureAdSetup
         {
             PreferredSingleSignOnMode = "saml"
         };
-        await _graphServiceClient.ServicePrincipals[servicePrincipalId].Request().UpdateAsync(updatedSp);
+        await _graphServiceClient.ServicePrincipals[servicePrincipalId].PatchAsync(updatedSp);
         // setup basic SAML URLs
         var application = new Application
         {
@@ -229,26 +219,28 @@ public class AzureAdSetup
                 $"https://signin.aws.amazon.com/saml#{appNumber}"
             }
         };
-        await _graphServiceClient.Applications[applicationId]
-            .Request()
-            .UpdateAsync(application);
+        await _graphServiceClient.Applications[applicationId].PatchAsync(application);
     }
 
     private async Task<(string applicationId, string servicePrincipalId, string appId)> InitializeApp(string applicationName)
     {
         // Get Template Id
-        var templates = await _graphServiceClient.ApplicationTemplates.Request()
-            .Filter($"displayName eq '{AppNameTemplate}'")
-            .Top(1)
-            .GetAsync();
-        if (templates.Count != 1)
+        var templatesResponse = await _graphServiceClient.ApplicationTemplates
+            .GetAsync(requestConfig => {
+                requestConfig.QueryParameters.Filter = $"displayName eq '{AppNameTemplate}'";
+                requestConfig.QueryParameters.Top = 1;
+            });
+        var templates = templatesResponse?.Value;
+        if (templates != null && templates.Count != 1)
         {
             return (string.Empty, string.Empty, string.Empty);
         }
         var template = templates[0];
         // create app
-        var response = await _graphServiceClient.ApplicationTemplates[template.Id].Instantiate(applicationName)
-            .Request().PostAsync();
+        var request = new InstantiatePostRequestBody {
+            DisplayName = applicationName
+        };
+        var response = await _graphServiceClient.ApplicationTemplates[template.Id].Instantiate.PostAsync(request);
         // wait for 60s
         await Task.Delay(TimeSpan.FromSeconds(60));
         return (response.Application.Id, response.ServicePrincipal.Id, response.ServicePrincipal.AppId);
