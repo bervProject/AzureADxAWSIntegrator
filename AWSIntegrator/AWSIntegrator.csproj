@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.IdentityManagement" Version="3.7.405.13" />
+      <PackageReference Include="AWSSDK.IdentityManagement" Version="3.7.405.14" />
     </ItemGroup>
 
 </Project>
