@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Azure.Identity" Version="1.14.1" />
+      <PackageReference Include="Azure.Identity" Version="1.14.2" />
       <PackageReference Include="Redis.OM" Version="1.0.1" />
     </ItemGroup>
 
