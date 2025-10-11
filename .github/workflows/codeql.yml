@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: csharp
     - name: Setup .NET Core
@@ -28,6 +28,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      uses: github/codeql-action/autobuild@v4
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
